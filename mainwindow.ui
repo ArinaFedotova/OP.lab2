@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="windowTitle">
+   <string>CSV file</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QTableView" name="tbl">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>60</y>
+      <width>501</width>
+      <height>191</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(145, 181, 163);
+color: rgb(33, 33, 33);
+
+scrollbar {
+   margin: 10;
+}</string>
+    </property>
+    <property name="verticalScrollBarPolicy">
+     <enum>Qt::ScrollBarAsNeeded</enum>
+    </property>
+    <property name="horizontalScrollBarPolicy">
+     <enum>Qt::ScrollBarAsNeeded</enum>
+    </property>
+    <property name="editTriggers">
+     <set>QAbstractItemView::AnyKeyPressed</set>
+    </property>
+    <property name="dragDropOverwriteMode">
+     <bool>false</bool>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>0</width>
+      <height>0</height>
+     </size>
+    </property>
+    <property name="verticalScrollMode">
+     <enum>QAbstractItemView::ScrollPerItem</enum>
+    </property>
+    <property name="horizontalScrollMode">
+     <enum>QAbstractItemView::ScrollPerItem</enum>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btn_metrics">
+    <property name="geometry">
+     <rect>
+      <x>600</x>
+      <y>490</y>
+      <width>131</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Calculate metrics</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btn_data">
+    <property name="geometry">
+     <rect>
+      <x>600</x>
+      <y>230</y>
+      <width>131</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton{
+background-color: rgb(255, 53, 142);
+color: rgb(222, 222, 222);
+}
+
+QPushButton:pressed{
+background-color: rgb(255, 78, 163);
+background-color: rgb(182, 53, 156);
+}</string>
+    </property>
+    <property name="text">
+     <string>Load data</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btn_file">
+    <property name="geometry">
+     <rect>
+      <x>600</x>
+      <y>180</y>
+      <width>131</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton{
+background-color: rgb(255, 53, 142);
+color: rgb(222, 222, 222);
+}
+
+QPushButton:pressed{
+background-color: rgb(255, 78, 163);
+background-color: rgb(182, 53, 156);
+}
+</string>
+    </property>
+    <property name="text">
+     <string>Choose file</string>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="comb_region">
+    <property name="geometry">
+     <rect>
+      <x>570</x>
+      <y>60</y>
+      <width>181</width>
+      <height>61</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="comb_column">
+    <property name="geometry">
+     <rect>
+      <x>570</x>
+      <y>110</y>
+      <width>181</width>
+      <height>61</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lbl_fileName">
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>30</y>
+      <width>431</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QLabel" name="graphic">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>280</y>
+      <width>501</width>
+      <height>250</height>
+     </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <property name="minimumSize">
+     <size>
+      <width>501</width>
+      <height>250</height>
+     </size>
+    </property>
+    <property name="maximumSize">
+     <size>
+      <width>501</width>
+      <height>250</height>
+     </size>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Box</enum>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="scaledContents">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>30</y>
+      <width>71</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>File Name: </string>
+    </property>
+   </widget>
+   <widget class="QWidget" name="gridLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>550</x>
+      <y>290</y>
+      <width>221</width>
+      <height>191</height>
+     </rect>
+    </property>
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="1" column="0">
+      <widget class="QLabel" name="lbl_n_min">
+       <property name="text">
+        <string>Minimum: </string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="lbl_n_med">
+       <property name="text">
+        <string>Median: </string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="lbl_n_max">
+       <property name="text">
+        <string>Maximum: </string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QLabel" name="lbl_med">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLabel" name="lbl_min">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLabel" name="lbl_max">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QScrollBar" name="verticalScrollBar">
+    <property name="geometry">
+     <rect>
+      <x>530</x>
+      <y>60</y>
+      <width>16</width>
+      <height>191</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Vertical</enum>
+    </property>
+   </widget>
+   <widget class="QScrollBar" name="horizontalScrollBar">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>250</y>
+      <width>501</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>24</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
