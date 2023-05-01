@@ -79,7 +79,7 @@ void MainWindow::on_btn_calc_metrics_clicked()
         ui->lbl_min->setText("Min value: " + QString::number(frv->solution_min));
         ui->lbl_max->setText("Max value: " + QString::number(frv->solution_max));
         ui->lbl_median->setText("Median value: " + QString::number(frv->solution_median));
-        drawGraph(true);
+        //drawGraph(true);
         entryPoint(cleanData, &fa);
     }
     else{
