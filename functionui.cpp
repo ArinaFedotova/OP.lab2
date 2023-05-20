@@ -3,11 +3,14 @@
 
 char* MainWindow::QstringToCharArray(QString qstr)
 {
-    char *str = (char*)malloc(sizeof(char)*(qstr.size() + 1));//+1 потому что в уонце добавляется 0
-    size_t i;
-    for (i = 0; i < qstr.size(); i++)
-        *(str+i) = qstr.at(i).unicode();
-    *(str+i) = 0;
+    char *str = (char*)malloc(sizeof(char)*(qstr.size() + 1));//+1 потому что в конце добавляется 0
+    if (str != NULL)
+    {
+        size_t i;
+        for (i = 0; i < qstr.size(); i++)
+            *(str+i) = qstr.at(i).unicode();
+        *(str+i) = 0;
+    }
     return str;
 }
 
@@ -22,22 +25,23 @@ QStringList MainWindow::ConvertRowToQTFormat(char **row, size_t size)
 void MainWindow::showData(FuncReturningValue* frv)
 {
     ui->tb_widget->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    ui->tb_widget-> setColumnCount(frv->fields_num);
-    QStringList header = ConvertRowToQTFormat(frv->headers, frv->fields_num);
-    ui->tb_widget->setHorizontalHeaderLabels(header);
+    ui->tb_widget-> setColumnCount(frv->col_num);
+    if (frv->headers!=NULL){
+        ui->tb_widget->setHorizontalHeaderLabels(ConvertRowToQTFormat(frv->headers,frv->col_num));
+    }
     if (frv->data != NULL){
         ui->tb_widget->setRowCount(0);
-        for (size_t i = 0; i < frv->len; i++){
-            QStringList currentRow = ConvertRowToQTFormat(frv->data[i], frv->fields_num);
-            ui->tb_widget->setRowCount(i + 1);
-            for (int j = 0; j < currentRow.count(); j++){
-                QTableWidgetItem *item = new QTableWidgetItem();
-                item->setText(currentRow.at(j));
-                ui->tb_widget->setItem(i, j, item);
-            }
+        for (size_t i = 0; i < frv->row_num; i++){
+            QStringList currentRow = ConvertRowToQTFormat(frv->data[i], frv->col_num);
+                ui->tb_widget->setRowCount(i + 1);
+                for (int j = 0; j < currentRow.count(); j++){
+                    QTableWidgetItem *item = new QTableWidgetItem();
+                    item->setText(currentRow.at(j));
+                    ui->tb_widget->setItem(i, j, item);
+                }
         }
-        headers=header;
-        if ((ui->box_column->count()==0)&&(!getRegions().empty())){
+
+        if ((ui->box_column->count()==0)||(getRegions().empty())){
             ui->box_region->addItems(getRegions());
             ui->box_column->addItems(getColumns());
         }
@@ -46,29 +50,45 @@ void MainWindow::showData(FuncReturningValue* frv)
 
 char*** MainWindow::getDataFromTable()
 {
-    char ***data = (char ***)malloc(sizeof(char**) * ui->tb_widget->rowCount());
-    for (size_t i = 0; i < (size_t)ui->tb_widget->rowCount(); i++)
+    size_t row_count=(size_t)ui->tb_widget->rowCount();
+    size_t column_count=(size_t)ui->tb_widget->columnCount();
+    char ***data=NULL;
+    if ((row_count*column_count!=0))
     {
-        *(data+i) = (char **)malloc(sizeof(char*) * ui->tb_widget->columnCount());
-        for (size_t j = 0; j < (size_t)ui->tb_widget->columnCount(); j++)
+        data = (char ***)malloc(sizeof(char**) * row_count);
+        if (data!=NULL)
         {
-            //Получаем значение в i-ой строке и j-ом столбце
-            QTableWidgetItem *item = ui->tb_widget->item(i,j);
-            //Приводим значение ячейки к стандартному типу строки
-            char* str = QstringToCharArray(item->text());
-            *(*(data+i)+j) = str;
+            for (size_t i = 0; i < row_count; i++)
+            {
+                *(data+i) = (char **)malloc(sizeof(char*) * column_count);
+                if (*(data+i)!=NULL)
+                {
+                    for (size_t j = 0; j < column_count; j++)
+                    {
+                        QTableWidgetItem *item = ui->tb_widget->item(i,j);
+                        char* str = QstringToCharArray(item->text());
+                        if (str!=NULL)
+                            *(*(data+i)+j) = str;
+                    }
+                }
+            }
         }
     }
     return data;
 }
 
 QStringList MainWindow::getColumns(){
-    QStringList columns = {};
-    for (size_t i = 0; i < (size_t)ui->tb_widget->columnCount(); i++){
-        QTableWidgetItem *item = ui->tb_widget->item(0,i);
-        char* str = QstringToCharArray(item->text());
-        if ((strcmp((str), "") != 0) && (!isalpha(*(str))))
-            columns.append(headers.at(i));
+    QStringList columns={};
+    FuncArgument fa={.filename=QstringToCharArray(ui->lbl_filename->text())};
+    FuncReturningValue* frv=entryPoint(getHeaders,&fa);
+    if (frv!=NULL){
+        QStringList headers=ConvertRowToQTFormat(frv->headers,frv->col_num);
+        for (size_t i=0;i<(size_t)ui->tb_widget->columnCount();i++){
+            QTableWidgetItem *item = ui->tb_widget->item(0,i);
+            char* str = QstringToCharArray(item->text());
+            if ((strcmp((str),"")!=0)&&(!isalpha(*(str))))
+                columns.append(headers.at(i));
+        }
     }
     return columns;
 }
@@ -76,17 +96,23 @@ QStringList MainWindow::getColumns(){
 QStringList MainWindow::getRegions()
 {
     QStringList regions={};
-    int column_num=headers.indexOf("region");
-    if (column_num!=-1){
-        for (size_t i = 0; i < (size_t)ui->tb_widget->rowCount();i++){
-            QTableWidgetItem *item = ui->tb_widget->item(i,column_num);
-            regions.append(item->text());
+    FuncArgument fa={.filename=QstringToCharArray(ui->lbl_filename->text())};
+    FuncReturningValue* frv=entryPoint(getHeaders,&fa);
+    if (frv!=NULL){
+        QStringList headers=ConvertRowToQTFormat(frv->headers,frv->col_num);
+        int column_num=headers.indexOf("region");
+        if (column_num!=-1){
+            for (size_t i=0;i<(size_t)ui->tb_widget->rowCount();i++){
+                QTableWidgetItem *item = ui->tb_widget->item(i,column_num);
+                regions.append(item->text());
+            }
+            regions.removeDuplicates();
         }
-        regions.removeDuplicates();
     }
     return regions;
 }
 
+//для графика
 QStringList MainWindow::getYears()
 {
     QStringList years={};
@@ -98,6 +124,7 @@ QStringList MainWindow::getYears()
     return years;
 }
 
+//для графика
 QStringList MainWindow::getNums()
 {
     QStringList nums={};
@@ -115,11 +142,27 @@ QStringList MainWindow::getNums()
 }
 
 size_t MainWindow::calculateColumns(size_t index_of_column){
-    QStringList box_content=getColumns();
     size_t count=0;
-    for (size_t i=0;i<=index_of_column;i++){
-        if ((strcmp(QstringToCharArray(headers.at(i+count)),QstringToCharArray(box_content.at(i)))!=0))
-            count++;
+    FuncArgument fa={.filename=QstringToCharArray(ui->lbl_filename->text())};
+    FuncReturningValue* frv=entryPoint(getHeaders,&fa);
+    if (frv!=NULL){
+        QStringList box_content=getColumns(),headers=ConvertRowToQTFormat(frv->headers,frv->col_num);
+        for (size_t i=0;i<=index_of_column;i++){
+            if ((strcmp(QstringToCharArray(headers.at(i+count)),QstringToCharArray(box_content.at(i)))!=0))
+                count++;
+        }
     }
     return count;
+}
+
+void MainWindow::clearTable(){
+    ui->tb_widget->setColumnCount(0);
+    ui->tb_widget->setRowCount(0);
+    ui->tb_widget->clearContents();
+}
+
+void MainWindow::setLblText(){
+    ui->lbl_min->setText("");
+    ui->lbl_max->setText("");
+    ui->lbl_median->setText("");
 }

@@ -3,8 +3,6 @@
 
 #include <QMainWindow>
 #include "buisenesslogic.h"
-#include <QPainter>
-#include <QMessageBox>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -17,11 +15,6 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-
-    struct QGraphic{
-
-
-    }graph;
 
 private slots:
 
@@ -37,22 +30,20 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    size_t key;
-    QStringList headers;
+    bool key;
     void showData(FuncReturningValue* frv);
     void clean2DArray(char **arr, size_t size);
     void clean3DArray(char ***arr, size_t sizeX, size_t sizeY);
-    void draw();
+    void draw(FuncReturningValue*frv);
     char*** getDataFromTable();
     size_t calculateColumns(size_t);
     QStringList getColumns();
     QStringList getRegions();
-    QStringList getYears();
-    QStringList getNums();
     char*QstringToCharArray(QString qstr);
     QStringList ConvertRowToQTFormat(char **row, size_t size);
-
-    void drawGraph(bool notEmpty);
+    QStringList getYears();
+    void clearTable();
+    void setLblText();
 };
 
 #endif // MAINWINDOW_H
